@@ -211,7 +211,7 @@ export default function AlbumSettingsModal({ album, isOpen, onClose, onUpdated, 
                                     ${tab === t.id
                                             ? t.id === 'danger'
                                                 ? 'text-red-500 border-b-2 border-red-500'
-                                                : 'text-pink-500 border-b-2 border-pink-500'
+                                                : 'text-blue-500 border-b-2 border-blue-500'
                                             : 'text-gray-500 hover:text-gray-700' 
                                     }
                                 `}
@@ -314,7 +314,7 @@ export default function AlbumSettingsModal({ album, isOpen, onClose, onUpdated, 
                                     <button
                                         onClick={handleGenerateCode}
                                         disabled={generatingCode}
-                                        className="w-full py-2.5 rounded-full border-2 border-gray-200 text-gray-600 text-sm font-semibold hover:border-pink-400 hover:text-pink-500 transition-colors"
+                                        className="w-full py-2.5 rounded-full border-2 border-gray-200 text-gray-600 text-sm font-semibold hover:border-blue-400 hover:text-blue-500 transition-colors"
                                     >
                                         {generatingCode ? 'Generating...' : 'Generate New Code'}
                                     </button>
@@ -342,7 +342,7 @@ export default function AlbumSettingsModal({ album, isOpen, onClose, onUpdated, 
                                     key={member.id}
                                     className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"
                                 >
-                                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-teal-400 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                                         {member.name?.[0]?.toUpperCase() || '?'}
                                     </div>
 
@@ -355,7 +355,7 @@ export default function AlbumSettingsModal({ album, isOpen, onClose, onUpdated, 
                                         </p>
                                     </div>
                                     {member.id === album.created_by && (
-                                        <span className="text-xs bg-pink-100 text-pink-600 font-semibold px-2 py-0.5 rounded-full flex-shrink-0">
+                                        <span className="text-xs bg-blue-100 text-blue-600 font-semibold px-2 py-0.5 rounded-full flex-shrink-0">
                                             Owner
                                         </span>
                                     )}

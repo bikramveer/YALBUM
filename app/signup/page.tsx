@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -49,11 +50,11 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background hearts */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="heart-float" style={{ left: '20%', animationDelay: '0s' }}>💕</div>
         <div className="heart-float" style={{ left: '70%', animationDelay: '3s' }}>💗</div>
         <div className="heart-float" style={{ left: '45%', animationDelay: '6s' }}>💖</div>
-      </div>
+      </div> */}
 
       {/* Sign Up Card */}
       <div className="auth-card w-full max-w-md relative z-10">
@@ -64,11 +65,24 @@ export default function SignUpPage() {
 
         {/* Main heart icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg animate-float">
-            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-            </svg>
-          </div>
+          <div className="flex justify-center mb-6">
+                              {/* <div className="
+                                  w-16
+                                  h-16
+                                  rounded-full
+                                  bg-gradient-to-br
+                                  from-pink-500
+                                  to-purple-500
+                                  flex
+                                  items-center
+                                  justify-center
+                                  shadow-lg
+                                  animate-float
+                                  "
+                              > */}
+                                  <Logo width={40} height={40} />
+                              {/* </div> */}
+                          </div>
         </div>
 
         {/* Title */}
@@ -185,8 +199,8 @@ export default function SignUpPage() {
         {/* Login link */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 flex items-center justify-center gap-2">
-            💖 Already have an account?{' '}
-            <Link href="/login" className="text-purple-500 font-semibold hover:text-purple-600 transition-colors">
+            Already have an account?{' '}
+            <Link href="/login" className="text-blue-500 font-semibold hover:text-teal-600 transition-colors">
               Login here
             </Link>
           </p>

@@ -233,7 +233,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
               {/* User info row */}
               <div className='flex items-center justify-between mb-4'>
                 <div className='flex items-center gap-3'>
-                  <div className='w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white font-semibold'>
+                  <div className='w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-semibold'>
                     {photo.profile?.name?.[0]?.toUpperCase() || '?'}
                   </div>
                   <div>

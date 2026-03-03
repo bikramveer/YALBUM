@@ -11,6 +11,7 @@ import { supabase } from "@/lib/supabase"
 import CreateAlbumModal from "@/components/CreateAlbumModal"
 import JoinAlbumModal from "@/components/JoinAlbumModal"
 import AlbumSettingsModal from "@/components/AlbumSettingsModal"
+import Logo from "@/components/Logo"
 
 export default function AlbumsPage() {
     const { user, loading, signOut } = useAuth()
@@ -49,9 +50,9 @@ export default function AlbumsPage() {
 
     if (loading || loadingAlbums) {
         return (
-            <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to bg-pink-50">
+            <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-teal-50 to-bg-teal-50">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
                 <p className="text-gray-600">Loading your albums...</p>
               </div>
             </main>
@@ -59,27 +60,23 @@ export default function AlbumsPage() {
     }
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50">
+        <main className="min-h-screen bg-gradient-to-br from-blue-50 via-teal-50 to-teal-50">
             {/* header */}
-            <header className="bg-white/80 backdrop-blur-md border-b border-pink-100 sticky top-0 z-40">
+            <header className="bg-white/80 backdrop-blur-md border-b border-blue-100 sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                     
                     <div className="flex items-center gap-3">  
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
-                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                            </svg>
-                        </div>
+                            <Logo width={32} height={32} />
 
                         <div>
-                            <h1 className="text-xl font-bold text-gray-800">Your Albums</h1>
-                            <p className="text-sm text-gray-500">Welcome, {profile?.name}! 💕</p>
+                            <h1 className="text-xl font-bold text-gray-800">Y A L B U M</h1>
+                            <p className="text-sm text-gray-500">Welcome, {profile?.name}!</p>
                         </div>  
                     </div>
 
                     <button
                         onClick={signOut}
-                        className="p-2 text-gray-500 hover:text-pink-500 transition-colors"
+                        className="p-2 text-gray-500 hover:text-blue-500 transition-colors"
                         title='Sign out'
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,7 +104,7 @@ export default function AlbumsPage() {
                     <div className="flex gap-3">
                         <button
                             onClick={() => setShowJoin(true)}
-                            className="flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-pink-400 text-pink-500 font-semibold hover:bg-pink-50 transition-colors text-sm"
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-blue-400 text-blue-500 font-semibold hover:bg-blue-50 transition-colors text-sm"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -117,7 +114,7 @@ export default function AlbumsPage() {
                         
                         <button
                             onClick={() => setShowCreate(true)}
-                            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold hover:opacity-90 transition-opacity text-sm shadow-md"
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold hover:opacity-90 transition-opacity text-sm shadow-md"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -131,8 +128,8 @@ export default function AlbumsPage() {
                 {albums.length === 0 && (
                     <div className="text-center py-20">
 
-                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center mx-auto mb-6">
-                            <svg className="w-12 h-12 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-200 to-teal-200 flex items-center justify-center mx-auto mb-6">
+                            <svg className="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
@@ -147,13 +144,13 @@ export default function AlbumsPage() {
                         <div className="flex justify-center gap-4">
                             <button
                                 onClick={() => setShowJoin(true)}
-                                className="px-6 py-3 rounded-full border-2 border-pink-400 text-pink-500 font-semibold hover:bg-pink-50 transition-colors"
+                                className="px-6 py-3 rounded-full border-2 border-blue-400 text-blue-500 font-semibold hover:bg-blue-50 transition-colors"
                             >
                                 Join with Code
                             </button>
                             <button
                                 onClick={() => setShowCreate(true)}
-                                className="px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold hover:opacity-90 transition-opacity shadow-md"
+                                className="px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold hover:opacity-90 transition-opacity shadow-md"
                             >
                                 Create Album
                             </button>
@@ -220,7 +217,7 @@ function AlbumCard({ album, onOpen, onRefresh }: {
                     style={{ background: album.theme_color }}
                 >
                     {album.cover_photos.length > 0 ? (
-                        <div className={`grid ${album.cover_photos.length  === 1 ? 'grid-cols-1' : 'grid-cols-2'} h-full gap-0.5`}>
+                        <div className={`grid ${album.cover_photos.length  === 1 ? 'grid-cols-1' : 'grid-cols-2'} h-full gap-0.5 p-1`}>
                             {album.cover_photos.slice(0, 4).map((path, i) => (
                                 <div
                                     key={i}
@@ -229,7 +226,7 @@ function AlbumCard({ album, onOpen, onRefresh }: {
                                     <img
                                         src={(path)}
                                         alt=""
-                                        className={`w-full h-full object-cover transition-all duration-300 ${hovered ? 'brightness-100' : 'brightness-75'}`}
+                                        className={`rounded-xl w-full h-full object-cover transition-all duration-300 ${hovered ? 'brightness-100' : 'brightness-75'}`}
                                     />
                                 </div>
                             ))}

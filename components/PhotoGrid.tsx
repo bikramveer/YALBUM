@@ -6,6 +6,7 @@ import { deletePhoto, getPhotoUrl } from "@/lib/storage";
 import { downloadPhotosAsZip, downloadSinglePhoto } from "@/lib/downloadHelpers";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { Images } from "lucide-react";
 import Image from "next/image";
 import PhotoModal from "./PhotoModal";
 import MovePhotoModal from "./MovePhotoModal";
@@ -158,7 +159,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                         h-12
                         w-12
                         border-b-2
-                        border-pink-500
+                        border-blue-500
                         mx-auto
                         mb-4
                         "
@@ -188,15 +189,15 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                             h-24
                             rounded-full
                             bg-gradient-to-br
-                            from-pink-200
-                            to-purple-200
+                            from-blue-200
+                            to-teal-200
                             flex
                             items-center
                             justify-center
                             "
                         >
-                            <svg 
-                                className="w-12 h-12 text-pink-500"
+                            {/* <svg 
+                                className="w-12 h-12 text-blue-500"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -207,7 +208,8 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                                     strokeWidth={2}
                                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                                 />
-                            </svg>
+                            </svg> */}
+                            <Images className="w-12 h-12 text-blue-500 mx-auto" />
                         </div>
                     </div>
 
@@ -216,11 +218,11 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                     </h2>
 
                     <p className="text-gray-600 mb-6 flex justify-center align-center">
-                        Let's start filling in our memories 💖
+                        Let's start filling in our memories
                     </p>
 
                     <p className="text-sm text-gray-500 justify-center align-center">
-                        Click the<span className="text-pink-500 font-semibold"> Upload </span> button above to add photos!
+                        Click the<span className="text-blue-500 font-semibold"> Upload </span> button above to add photos!
                     </p>
                 </div>
             </div>
@@ -242,7 +244,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                         <select
                             value={sortOption}
                             onChange={e => onSortChange(e.target.value as SortOption)}
-                            className="px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 text-sm font-medium focus:outline-none focus:border-pink-400 cursor-pointer"
+                            className="px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 text-sm font-medium focus:outline-none focus:border-blue-400 cursor-pointer"
                         >
                             {(Object.keys(SORT_LABELS) as SortOption[]).map(key => (
                                 <option key={key} value={key}>
@@ -256,8 +258,8 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                             onClick={toggleSelectMode}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-semibold transition-all ${
                                 selectMode
-                                ? 'bg-gradient-to-r from-pink-500 to-purple-500 border-transparent text-white'
-                                : 'border-gray-300 text-gray-700 bg-white hover:border-pink-400'
+                                ? 'bg-gradient-to-r from-blue-500 to-teal-500 border-transparent text-white'
+                                : 'border-gray-300 text-gray-700 bg-white hover:border-blue-400'
                             }`}
                         >
                             {selectMode ? (
@@ -283,7 +285,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={allSelected ? deselectAll : selectAll}
-                                className="px-4 py-2 rounded-full border-2 border-gray-300 bg-white text-gray-700 text-sm font-semibold hover:border-pink-400 transition-colors"
+                                className="px-4 py-2 rounded-full border-2 border-gray-300 bg-white text-gray-700 text-sm font-semibold hover:border-blue-400 transition-colors"
                             >
                                 {allSelected ? 'Deselect All' : 'Select All'}
                             </button>
@@ -291,7 +293,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                             {selectedIds.size > 0 && (
                                 <button
                                     onClick={() => setShowMoveMulti(true)}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 bg-white text-gray-700 text-sm font-semibold hover:border-pink-400 transition-colors"
+                                    className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 bg-white text-gray-700 text-sm font-semibold hover:border-blue-400 transition-colors"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -368,7 +370,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                             <div
                                 key={photo.id}
                                 className={`photo-card group cursor-pointer transition-all ${
-                                    isSelected ? 'ring-4 ring-pink-500 ring-offset-2 rounded-lg' : ''
+                                    isSelected ? 'ring-4 ring-blue-500 ring-offset-2 rounded-lg' : ''
                                 }`}
                                 onClick={() => selectMode ? togglePhoto(photo.id) : setSelectedPhoto(photo)}
                             >
@@ -385,7 +387,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                                     {selectMode && (
                                         <div className={`absolute top-2 left-2 w-7 h-7 rounded-lg flex items-center justify-center transition-all shadow-md ${
                                             isSelected
-                                                ? 'bg-gradient-to-br from-pink-500 to-purple-500'
+                                                ? 'bg-gradient-to-br from-blue-500 to-teal-500'
                                                 : 'bg-white/80 border-2 border-gray-300'
                                         }`}>
                                             {isSelected && (

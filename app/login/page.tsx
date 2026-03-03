@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 import { Eye, EyeOff } from "lucide-react";
 
@@ -49,7 +50,7 @@ export default function LoginPage() {
             overflow-hidden
             "
         >
-            <div className="
+            {/* <div className="
                 absolute
                 inset-0
                 overflow-hidden
@@ -61,7 +62,7 @@ export default function LoginPage() {
                 <div className="heart-float" style={{ left: '80%', animationDelay: '2s' }}>💗</div>
 
                 <div className="heart-float" style={{ left: '50%', animationDelay: '4s' }}>💖</div>
-            </div>
+            </div> */}
 
             <div className="
                 auth-card
@@ -75,16 +76,16 @@ export default function LoginPage() {
                     absolute
                     -top-3
                     -right-3
-                    text-pink-400
+                    text-blue-400
                     text-2xl
                     animate-pulse
                     "
                 >
-                    💕
+                    {/* Insert emoji for top right corner if wanted */}
                 </div>
 
                 <div className="flex justify-center mb-6">
-                    <div className="
+                    {/* <div className="
                         w-16
                         h-16
                         rounded-full
@@ -97,18 +98,9 @@ export default function LoginPage() {
                         shadow-lg
                         animate-float
                         "
-                    >
-                        <svg 
-                            className="w-8 h-8 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                        >
-                            <path fillRule="evenodd"
-                                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
-                    </div>
+                    > */}
+                        <Logo width={40} height={40} />
+                    {/* </div> */}
                 </div>
 
                 <h1 className="
@@ -119,7 +111,7 @@ export default function LoginPage() {
                     text-gray-800
                     "
                 >
-                    Our Photo Book
+                    Y A L B U M
                 </h1>
                 <p className="
                     text-center
@@ -131,7 +123,7 @@ export default function LoginPage() {
                     gap-2
                     "
                 >
-                    Welcome back! 💕
+                    Welcome back!
                 </p>
 
                 {error && (
@@ -258,9 +250,9 @@ export default function LoginPage() {
                         <span className="sparkle">✨</span>
                         Don&apos;t have an account?{' '}
                         <Link href='/signup' className="
-                            text-pink-500
+                            text-blue-500
                             font-semibold
-                            hover: text-pink-600
+                            hover:text-teal-600
                             transition-colors
                             "
                         >
@@ -276,7 +268,7 @@ export default function LoginPage() {
                         transform: translateY(0px);
                     }
                     50% {
-                        transform: translateY(-10px);
+                        transform: translateY(-5px);
                     }
                 }
 

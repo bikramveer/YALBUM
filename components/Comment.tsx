@@ -86,7 +86,7 @@ export default function Comment({ comment, onReplyAdded }: CommentProps) {
       {/* Comment header */}
       <div className="flex items-start gap-3">
         {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-teal-400 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
           {comment.profile?.name?.[0]?.toUpperCase() || '?'}
         </div>
 
@@ -109,7 +109,7 @@ export default function Comment({ comment, onReplyAdded }: CommentProps) {
           <div className="flex items-center gap-3 mt-2">
             <button
               onClick={() => setShowReplyInput(!showReplyInput)}
-              className="text-xs font-medium text-gray-500 hover:text-pink-500 transition-colors"
+              className="text-xs font-medium text-gray-500 hover:text-blue-500 transition-colors"
             >
               Reply
             </button>
@@ -133,14 +133,14 @@ export default function Comment({ comment, onReplyAdded }: CommentProps) {
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder="Write a reply..."
-                className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-pink-500 transition-colors"
+                className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-blue-500 transition-colors"
                 autoFocus
                 disabled={submitting}
               />
               <button
                 type="submit"
                 disabled={!replyText.trim() || submitting}
-                className="px-4 py-1.5 text-sm bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium hover:shadow-md transition-all disabled:opacity-50"
+                className="px-4 py-1.5 text-sm bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-full font-medium hover:shadow-md transition-all disabled:opacity-50"
               >
                 {submitting ? '...' : 'Reply'}
               </button>

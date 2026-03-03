@@ -112,7 +112,7 @@ export default function FolderSettingsModal({ folder, isOpen, onClose, onUpdated
                         onClick={() => setTab('settings')}
                         className={`flex-1 py-3 text-sm font-semibold transition-colors
                             ${tab === 'settings' 
-                                ? 'text-pink-500 border-b-2 border-pink-500'
+                                ? 'text-blue-500 border-b-2 border-blue-500'
                                 : 'text-gray-500 hover:text-gray-700'
                             }`}
                     >
