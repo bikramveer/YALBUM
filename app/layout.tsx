@@ -4,7 +4,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import ToastProvider from "@/components/ToastProvider";
 
 export const metadata: Metadata = {
-  title: "Our Memories - Photo Album",
+  title: "Y A L B U M",
   description: "A private photo album for our special moments together",
 };
 
