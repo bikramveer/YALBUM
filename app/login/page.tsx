@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -10,7 +10,7 @@ import Logo from "@/components/Logo";
 
 import { Eye, EyeOff } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams()
     const [email, setEmail] = useState('');
@@ -320,5 +320,17 @@ export default function LoginPage() {
             `}</style>
             <FloatingInfo />
         </div>
+    )
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className='min-h-screen flex items-center justify-center bg-blue-50'>
+                <div className='animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full' />
+            </div>
+        }>
+            <LoginForm />
+        </Suspense>
     )
 }
