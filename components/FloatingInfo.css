@@ -1,0 +1,124 @@
+.floating-info-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100;
+}
+
+.floating-info-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2882ff, #00b9ac);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
+}
+
+.floating-info-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+}
+
+.floating-info-button:active {
+    transform: scale(0.95);
+}
+
+.floating-info-popup {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 320px;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    animation: slideUpFade 0.3s ease;
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.floating-info-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #6d7280;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.floating-info-close:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+.floating-info-title {
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111827;
+    padding-right: 24px;
+}
+
+.floating-info-text {
+    margin: 0 0 12px 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.floating-info-tip {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b7280;
+    background-color: #f9fafb;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border-left: 3px solid #fbbf24;
+}
+
+@media (max-width: 768px) {
+    .floating-info-container {
+        bottom: 16px;
+        right: 16px;
+    }
+
+    .floating-info-button {
+        width: 48px;
+        height: 48px;
+    }
+
+    .floating-info-popup {
+        width: calc(100vw - 32px);
+        max-width: 320px;
+        bottom: 64px;
+    }
+}
+
+@media (max-width: 1150px) {
+    .floating-info-popup {
+        right: 0;
+        left: auto;
+    }
+}

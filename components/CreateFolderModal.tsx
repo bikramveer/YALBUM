@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "./AuthProvider"
+import { blockDemoAction } from "@/lib/demoUser"
 
 interface CreateFolderModalProps {
     isOpen: boolean
@@ -29,6 +30,9 @@ export default function CreateFolderModal({ isOpen, onClose, onFolderCreated, al
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (blockDemoAction(user?.email, 'create folders')) {
+            return
+        }
         if (!name.trim() || !user) return
 
         setCreating(true)

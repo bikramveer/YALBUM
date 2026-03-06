@@ -5,6 +5,7 @@ import { AlbumWithDetails } from "@/types/database"
 import { toast } from "sonner"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "./AuthProvider"
+import { blockDemoAction } from "@/lib/demoUser"
 import { createInviteCode } from "@/lib/albums"
 
 interface Props {
@@ -72,6 +73,9 @@ export default function AlbumSettingsModal({ album, isOpen, onClose, onUpdated, 
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (blockDemoAction(user?.email, 'change settings')) {
+            return
+        }
         if (!name.trim()) return
         setSaving(true)
         setError(null)
@@ -99,6 +103,9 @@ export default function AlbumSettingsModal({ album, isOpen, onClose, onUpdated, 
     }
 
     const handleGenerateCode = async () => {
+        if (blockDemoAction(user?.email, 'generate invite codes')) {
+            return
+        }
         if (!user) return
         setGeneratingCode(true)
         const code = await createInviteCode(album.id, user.id)
@@ -115,6 +122,9 @@ export default function AlbumSettingsModal({ album, isOpen, onClose, onUpdated, 
     }
 
     const handleLeave = async () => {
+        if (blockDemoAction(user?.email, 'leave demo album')) {
+            return
+        }
         if (!user) return
         setLeaving(true)
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import FloatingInfo from '../../components/FloatingInfo'
 import Link from "next/link";
 import Logo from "@/components/Logo";
 
@@ -29,6 +30,11 @@ export default function LoginPage() {
             });
 
             if (error) throw error;
+
+            if (data.user && !data.user.email_confirmed_at) {
+                await supabase.auth.signOut()
+                throw new Error('Please verify your email before logging in. Check your inbox!')
+            }
             
             router.push('/');
             router.refresh()
@@ -304,6 +310,7 @@ export default function LoginPage() {
                     animation: float 2s ease-in-out infinite;
                 }
             `}</style>
+            <FloatingInfo />
         </div>
     )
 }

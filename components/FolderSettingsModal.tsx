@@ -4,6 +4,7 @@ import { use, useState } from "react"
 import { FolderWithCount } from "@/types/database"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "./AuthProvider"
+import { blockDemoAction } from "@/lib/demoUser"
 
 interface Props {
     folder: FolderWithCount
@@ -34,6 +35,9 @@ export default function FolderSettingsModal({ folder, isOpen, onClose, onUpdated
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (blockDemoAction(user?.email, 'change folder settings')) {
+            return
+        }
         if (!name.trim()) return
         setSaving(true)
         setError(null)

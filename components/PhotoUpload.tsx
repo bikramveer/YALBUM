@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useAuth } from './AuthProvider';
+import { blockDemoAction } from '@/lib/demoUser';
 import { uploadPhoto, validateImageFile, getPhotoMetadata } from '@/lib/storage';
 import { supabase } from '@/lib/supabase';
 
@@ -64,6 +65,11 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
     }
 
     const handleButtonClick = () => {
+        const { user } = useAuth()
+
+        if (blockDemoAction(user?.email, 'upload photos')) {
+            return
+        }
         fileInputRef.current?.click();
     }
 

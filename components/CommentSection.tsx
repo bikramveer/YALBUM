@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CommentWithUser } from '@/types/database'
 import { useAuth } from './AuthProvider'
+import { blockDemoAction } from '@/lib/demoUser'
 import { supabase } from '@/lib/supabase'
 import Comment from './Comment';
 
@@ -20,6 +21,9 @@ export default function CommentSection({ photoId, comments, loading, onCommentAd
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (blockDemoAction(user?.email, 'comment on photos')) {
+      return
+    }
     if (!newComment.trim() || !user) return
 
     setSubmitting(true)

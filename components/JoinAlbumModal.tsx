@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { joinAlbumWithCode } from "@/lib/albums"
 import { useAuth } from "./AuthProvider"
+import { blockDemoAction } from "@/lib/demoUser"
 
 interface Props {
     isOpen: boolean
@@ -18,6 +19,9 @@ export default function JoinAlbumModal({ isOpen, onClose, onJoined }: Props) {
 
     const handleJoin = async(e: React.FormEvent) => {
         e.preventDefault()
+        if (blockDemoAction(user?.email, 'join albums')) {
+            return
+        }
         if (!code.trim() || !user) return
         setJoining(true)
         setError(null)

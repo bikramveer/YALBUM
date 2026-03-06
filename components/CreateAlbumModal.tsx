@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from './AuthProvider'
+import { blockDemoAction } from '@/lib/demoUser'
 
 interface Props {
   isOpen: boolean
@@ -28,6 +29,9 @@ export default function CreateAlbumModal({ isOpen, onClose, onCreated }: Props) 
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (blockDemoAction(user?.email, 'create albums')) {
+      return
+    }
     if (!name.trim() || !user) return
     setCreating(true)
     setError(null)

@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { toast } from 'sonner'
 import Link from 'next/link'
 import Logo from '@/components/Logo'
 
@@ -10,13 +11,22 @@ import { Eye, EyeOff } from 'lucide-react';
 
 export default function SignUpPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
 
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassord, setConfirmPassword] = useState('');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (searchParams.get('verified') === 'true') {
+      toast.success('Email verified! You can now log in.')
+    }
+  }, [searchParams])
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,6 +39,7 @@ export default function SignUpPage() {
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             name, // This will be used by the trigger to populate profiles table
           },
@@ -37,8 +48,17 @@ export default function SignUpPage() {
 
       if (error) throw error
 
+      if (data.user) {
+        await supabase.from('profiles').insert({
+          id: data.user.id,
+          email,
+          name,
+        })
+      }
+
       // Redirect to home page (or show confirmation message)
-      router.push('/')
+      toast.success('Success! CHeck your email to verify your account.')
+      router.push('/login')
       router.refresh()
     } catch (err: any) {
       setError(err.message || 'Failed to sign up')
@@ -174,6 +194,52 @@ export default function SignUpPage() {
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-1">At least 6 characters</p>
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword"
+                className="
+                    block
+                    text-sm
+                    font-medium
+                    text-gray-700
+                    mb-2
+                    "
+            >
+                Confirm Password
+            </label>
+            <div className="relative">
+                <input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassord}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="********"
+                    required
+                    className="auth-input"
+                />
+                <button
+                  type='button'
+                  className='
+                    absolute
+                    -translate-y-2/4
+                    cursor-pointer
+                    text-gray-400
+                    p-1.5
+                    rounded-[10px]
+                    border-[none]
+                    right-2.5
+                    top-2/4
+                    hover:text-gray-500
+                    background-transparent
+                    hover:background-#f3f4f6  
+                  '
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  aria-label='Toggle password visibility'
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+            </div>
           </div>
 
           {/* Sign Up Button */}
