@@ -19,9 +19,9 @@ export default function JoinAlbumModal({ isOpen, onClose, onJoined }: Props) {
 
     const handleJoin = async(e: React.FormEvent) => {
         e.preventDefault()
-        if (blockDemoAction(user?.email, 'join albums')) {
-            return
-        }
+        // if (blockDemoAction(user?.email, 'join albums')) {
+        //     return
+        // }
         if (!code.trim() || !user) return
         setJoining(true)
         setError(null)
