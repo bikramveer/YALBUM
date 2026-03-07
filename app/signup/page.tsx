@@ -55,7 +55,7 @@ function SignUpForm() {
       }
 
       // Redirect to home page (or show confirmation message)
-      toast.success('Success! CHeck your email to verify your account.')
+      toast.success('Success! Check your email to verify your account.')
       router.push('/login')
       router.refresh()
     } catch (err: any) {
