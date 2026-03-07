@@ -32,6 +32,20 @@ function SignUpForm() {
     }
 
     try {
+      // Check or existing user with email
+      const { data: existingUsers, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+      
+      if (checkError) throw checkError
+
+      if (existingUsers && existingUsers.length > 0) {
+        setError('An account with that email already exists')
+        setLoading(false)
+        return
+      }
+
       // Sign up the user
       const { data, error } = await supabase.auth.signUp({
         email,
