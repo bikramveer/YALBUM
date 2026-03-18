@@ -22,52 +22,6 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const files = e.target.files;
-    //     if (!files || files.length === 0 || !user) return;
-
-    //     setUploading(true);
-    //     setError(null);
-
-    //     try {
-    //         for (const file of Array.from(files)) {
-    //             const validation = validateImageFile(file);
-    //             if (!validation.valid) {
-    //                 setError(validation.error || 'Invalid file');
-    //                 continue;
-    //             }
-
-    //             const storagePath = await uploadPhoto(file, user.id);
-    //             const metadata = getPhotoMetadata(file);
-
-    //             const { error: dbError } = await supabase
-    //                 .from('photos')
-    //                 .insert({
-    //                     user_id: user.id,
-    //                     album_id: albumId,
-    //                     storage_path: storagePath,
-    //                     folder_id: currentFolderId,
-    //                     ...metadata,
-    //                 })
-                
-    //             if (dbError) throw dbError;
-    //         }
-
-    //         // Refresh photo grid
-    //         onUploadComplete();
-
-    //         // Refresh input
-    //         if (fileInputRef.current) {
-    //             fileInputRef.current.value = '';
-    //         }
-    //     } catch (err: any) {
-    //         console.error('Upload error:', err);
-    //         setError(err.message || 'Failed to upload photo');
-    //     } finally {
-    //         setUploading(false);
-    //     }
-    // }
-
     const handleButtonClick = () => {
         if (checkDemoUser(user?.email)) {
             showDemoModal('upload photos');
@@ -157,14 +111,7 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
             <input
                 ref={fileInputRef}
                 type='file'
-                accept='
-                    image/jpeg,
-                    image/jpg,
-                    image/png,
-                    image/gif,
-                    image/webp,
-                    image/heic,
-                    '
+                accept='image/jpeg,image/jpg,image/png,image/gif,image/webp,image/heic'
                 multiple
                 onChange={handleFileSelect}
                 className='hidden'
@@ -206,20 +153,7 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
             </button>
 
             {error && (
-                <div className='
-                    fixed
-                    bottom-4
-                    right-4
-                    bg-red-500
-                    text-white
-                    px-4
-                    py-3
-                    rounded-lg
-                    shadow-lg
-                    max-w-sm
-                    animate-slideUp
-                    '
-                >
+                <div className='fixed bottom-4 right-4 bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg max-w-sm animate-slideUp'>
                     <p className='text-sm'>{error}</p>
                 </div>
             )}
