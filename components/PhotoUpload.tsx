@@ -5,7 +5,9 @@ import { useAuth } from './AuthProvider';
 import { checkDemoUser } from "@/lib/demoUser";
 import { useDemoModal } from "./DemoModalProvider";
 import { uploadPhoto, validateImageFile, getPhotoMetadata } from '@/lib/storage';
+// import { toast } from "sonner";
 import { supabase } from '@/lib/supabase';
+import heic2any from 'heic2any';
 
 interface PhotoUploadProps {
     onUploadComplete: () => void
@@ -20,7 +22,15 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleButtonClick = () => {
+        if (checkDemoUser(user?.email)) {
+            showDemoModal('upload photos');
+            return;
+        }
+        fileInputRef.current?.click();
+    }
+
+    const handleFileSelect = async(e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (!files || files.length === 0 || !user) return;
 
@@ -28,7 +38,39 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
         setError(null);
 
         try {
+            const processedFiles: File[] = [];
+
             for (const file of Array.from(files)) {
+                const isHeic = file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic');
+
+                if (isHeic) {
+                    try {
+                        const convertedBlob = await heic2any({
+                            blob: file,
+                            toType: 'image/jpeg',
+                            quality: 0.9,
+                        });
+
+                        const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+
+                        const convertedFile = new File(
+                            [blob],
+                            file.name.replace(/\.heic$/i, '.jpg'),
+                            { type: 'image/jpeg' }
+                        );
+
+                        processedFiles.push(convertedFile);
+                    } catch (conversionError) {
+                        console.error('HEIC conversion failed:', conversionError);
+                        setError(`Failed to convert ${file.name}. Please try converting to JPEG first.`);
+                        continue;
+                    }
+                } else {
+                    processedFiles.push(file);
+                }
+            }
+
+            for (const file of processedFiles) {
                 const validation = validateImageFile(file);
                 if (!validation.valid) {
                     setError(validation.error || 'Invalid file');
@@ -46,15 +88,13 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
                         storage_path: storagePath,
                         folder_id: currentFolderId,
                         ...metadata,
-                    })
-                
+                    });
+
                 if (dbError) throw dbError;
             }
 
-            // Refresh photo grid
             onUploadComplete();
 
-            // Refresh input
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -66,26 +106,12 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
         }
     }
 
-    const handleButtonClick = () => {
-        if (checkDemoUser(user?.email)) {
-            showDemoModal('upload photos')
-            return
-        }
-        fileInputRef.current?.click();
-    }
-
     return (
         <>
             <input
                 ref={fileInputRef}
                 type='file'
-                accept='
-                    image/jpeg,
-                    image/jpg,
-                    image/png,
-                    image/gif,
-                    image/webp,
-                    '
+                accept='image/jpeg,image/jpg,image/png,image/gif,image/webp,image/heic'
                 multiple
                 onChange={handleFileSelect}
                 className='hidden'
@@ -127,20 +153,7 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
             </button>
 
             {error && (
-                <div className='
-                    fixed
-                    bottom-4
-                    right-4
-                    bg-red-500
-                    text-white
-                    px-4
-                    py-3
-                    rounded-lg
-                    shadow-lg
-                    max-w-sm
-                    animate-slideUp
-                    '
-                >
+                <div className='fixed bottom-4 right-4 bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg max-w-sm animate-slideUp'>
                     <p className='text-sm'>{error}</p>
                 </div>
             )}

@@ -103,7 +103,8 @@ export function validateImageFile(file: File): { valid: boolean; error?: string 
       'image/jpg',
       'image/png',
       'image/gif',
-      'image/webp'
+      'image/webp',
+      'image/heic'
     ]
     if (!validTypes.includes(file.type)) {
       return {

@@ -185,20 +185,7 @@ function SignUpForm() {
               />
               <button
                 type='button'
-                className='
-                  absolute
-                  -translate-y-2/4
-                  cursor-pointer
-                  text-gray-400
-                  p-1.5
-                  rounded-[10px]
-                  border-[none]
-                  right-2.5
-                  top-2/4
-                  hover:text-gray-500
-                  background-transparent
-                  hover:background-#f3f4f6  
-                '
+                className='absolute -translate-y-2/4 cursor-pointer text-gray-400 p-1.5 rounded-[10px] border-[none] right-2.5 top-2/4 hover:text-gray-500 background-transparent hover:background-#f3f4f6'
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label='Toggle password visibility'
               >
@@ -210,14 +197,7 @@ function SignUpForm() {
 
           <div>
             <label htmlFor="confirmPassword"
-                className="
-                    block
-                    text-sm
-                    font-medium
-                    text-gray-700
-                    mb-2
-                    "
-            >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Confirm Password
             </label>
             <div className="relative">
@@ -232,20 +212,7 @@ function SignUpForm() {
                 />
                 <button
                   type='button'
-                  className='
-                    absolute
-                    -translate-y-2/4
-                    cursor-pointer
-                    text-gray-400
-                    p-1.5
-                    rounded-[10px]
-                    border-[none]
-                    right-2.5
-                    top-2/4
-                    hover:text-gray-500
-                    background-transparent
-                    hover:background-#f3f4f6  
-                  '
+                  className='absolute -translate-y-2/4 cursor-pointer text-gray-400 p-1.5 rounded-[10px] border-[none] right-2.5 top-2/4 hover:text-gray-500 background-transparent hover:background-#f3f4f6'
                   onClick={() => setShowConfirmPassword((v) => !v)}
                   aria-label='Toggle password visibility'
                 >

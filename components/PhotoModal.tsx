@@ -161,65 +161,21 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
       <div className='modal-overlay overflow-hidden' onClick={onClose}>
         {/* Inner wrapper */}
         <div onClick={(e) => e.stopPropagation()}
-          className='
-            flex
-            flex-col
-            md:flex-row
-            md:items-start
-            rounded-xl
-            overflow-hidden
-            shadow-2xl
-            w-full
-            md:w-auto
-            md:max-w-[90vw]
-            max-h-[90vh]
-            '
-        >
+          className='flex flex-col md:flex-row md:items-start rounded-xl overflow-hidden shadow-2xl w-full md:w-auto md:max-w-[90vw] max-h-[90vh]'>
           {/* Photo — natural size, transparent bg, ref for height measurement */}
           <div
             ref={photoRef}
-            className='
-              relative
-              flex
-              items-center
-              justify-center
-              bg-transparent
-              overflow-hidden
-              md:max-w-[65vw]
-              flex-shrink-0
-            '
-          >
+            className='relative flex items-center justify-center bg-transparent overflow-hidden md:max-w-[65vw] flex-shrink-0'>
             <img
               src={photo.signed_url || getPhotoUrl(photo.storage_path)}
               alt={photo.file_name}
-              className='
-                block
-                w-full
-                md:w-auto
-                md:h-auto
-                md:max-h-[90vh]
-                md:max-w-[55vw]
-                max-h-[45vh]
-                object-contain
-                rounded-l-xl
-              '
+              className='block w-full md:w-auto md:h-auto md:max-h-[90vh] md:max-w-[55vw] max-h-[45vh] object-contain rounded-l-xl'
             />
           </div>
 
           {/* Sidebar — height locked to photo height on desktop via JS */}
           <div
-            className='
-              w-full
-              md:w-[380px]
-              md:flex-shrink-0
-              bg-white
-              flex
-              flex-col
-              overflow-hidden
-              min-h-0
-              max-h-[45vh]
-              md:max-h-none
-            '
+            className='w-full md:w-[380px] md:flex-shrink-0 bg-white flex flex-col overflow-hidden min-h-0 max-h-[45vh] md:max-h-none'
             style={{
               // On desktop: exactly match photo height so comments never overflow it
               // On mobile: ignored, max-h-[45vh] handles it
