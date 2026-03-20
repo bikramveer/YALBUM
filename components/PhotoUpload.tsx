@@ -5,7 +5,7 @@ import { useAuth } from './AuthProvider';
 import { checkDemoUser } from "@/lib/demoUser";
 import { useDemoModal } from "./DemoModalProvider";
 import { uploadPhoto, validateImageFile, getPhotoMetadata } from '@/lib/storage';
-// import { toast } from "sonner";
+import { toast } from "sonner";
 import { supabase } from '@/lib/supabase';
 // import heic2any from 'heic2any';
 
@@ -32,6 +32,7 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
 
     const handleFileSelect = async(e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
+        let containsHeic = false
         if (!files || files.length === 0 || !user) return;
 
         setUploading(true);
@@ -39,34 +40,14 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
 
         try {
             const processedFiles: File[] = [];
+            const skippedFiles: File[] = []
 
             for (const file of Array.from(files)) {
                 const isHeic = file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic');
 
                 if (isHeic) {
-                    try {
-                        const heic2any = (await import('heic2any')).default;
-                        
-                        const convertedBlob = await heic2any({
-                            blob: file,
-                            toType: 'image/jpeg',
-                            quality: 0.9,
-                        });
-
-                        const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
-
-                        const convertedFile = new File(
-                            [blob],
-                            file.name.replace(/\.heic$/i, '.jpg'),
-                            { type: 'image/jpeg' }
-                        );
-
-                        processedFiles.push(convertedFile);
-                    } catch (conversionError) {
-                        console.error('HEIC conversion failed:', conversionError);
-                        setError(`Failed to convert ${file.name}. Please try converting to JPEG first.`);
-                        continue;
-                    }
+                    containsHeic = true
+                    skippedFiles.push(file);
                 } else {
                     processedFiles.push(file);
                 }
@@ -96,6 +77,13 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
             }
 
             onUploadComplete();
+            if (containsHeic && processedFiles.length > 0) {
+                toast.success(`Successfully uploaded ${processedFiles.length} ${processedFiles.length > 1 ? 'photos' : 'photo'}. Skipped ${skippedFiles.length} ${skippedFiles.length > 1 ? 'photos' : 'photo'} due to invalid file types. Please use the Yalbum app to upload HEIC files.`)
+            } else if (containsHeic && processedFiles.length === 0) {
+                toast.success('Invalid file type. Please use the YALBUM app to upload .heic files.');
+            } else {
+                toast.success(`Successfully uploaded ${processedFiles.length} ${processedFiles.length > 1 ? 'photos' : 'photo'}.`)
+            }
 
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
