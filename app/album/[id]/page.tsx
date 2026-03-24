@@ -146,7 +146,7 @@ export default function AlbumPage() {
 
                   {/* Dekstop - single row */}
                   <div className="hidden sm:flex items-center justify-between">
-                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentFolder(null)}>
+                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => currentFolder === null ? router.push('/albums') : setCurrentFolder(null)}>
                       <Logo width={32} height={32} />
                         <div>
                             <h1 className="text-xl font-bold text-gray-800">Y A L B U M</h1>

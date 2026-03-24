@@ -101,7 +101,7 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
             <input
                 ref={fileInputRef}
                 type='file'
-                accept='image/jpeg,image/jpg,image/png,image/gif,image/webp,image/heic'
+                accept='image/jpeg,image/jpg,image/png,image/gif,image/webp'
                 multiple
                 onChange={handleFileSelect}
                 className='hidden'
