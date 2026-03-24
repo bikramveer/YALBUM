@@ -245,16 +245,18 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
                 </button>
 
                 {/* Move */}
-                <button
-                  onClick={() => setShowMoveModal(true)}
-                  className='flex items-center justify-center gap-2 flex-1 py-2.5 text-gray-700 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors font-medium text-sm'
-                  title='Move photo'
-                >
-                  <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                  </svg>
-                  Move
-                </button>
+                {user && user.id === photo.user_id && (
+                  <button
+                    onClick={() => setShowMoveModal(true)}
+                    className='flex items-center justify-center gap-2 flex-1 py-2.5 text-gray-700 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors font-medium text-sm'
+                    title='Move photo'
+                  >
+                    <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    Move
+                  </button>
+                )}
 
                 {/* Delete (only for photo owner) */}
                 {user && user.id === photo.user_id && (

@@ -74,6 +74,11 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
     const selectAll = () => setSelectedIds(new Set(sortedPhotos.map(p => p.id)))
     const deselectAll = () => setSelectedIds(new Set())
 
+    const ownsAllSelectedPhotos = () => {
+        if (selectedPhotos.length === 0) return false;
+        return selectedPhotos.every(photo => photo.user_id === user?.id);
+    }
+
     const handleBulkDownload = async () => {
         const count = selectedPhotos.length
 
@@ -296,7 +301,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                                 {allSelected ? 'Deselect All' : 'Select All'}
                             </button>
 
-                            {selectedIds.size > 0 && (
+                            {selectedIds.size > 0 && ownsAllSelectedPhotos() && (
                                 <button
                                     onClick={() => setShowMoveMulti(true)}
                                     className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 bg-white text-gray-700 text-sm font-semibold hover:border-blue-400 transition-colors"
@@ -333,7 +338,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                                 </button>
                             )}
 
-                            {selectedIds.size > 0 && (
+                            {selectedIds.size > 0 && ownsAllSelectedPhotos() && (
                                 <button
                                     onClick={() => {
                                         if (checkDemoUser(user?.email)) {
@@ -391,6 +396,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                                     <Image
                                         src={photo.signed_url || getPhotoUrl(photo.storage_path)}
                                         alt={photo.file_name}
+                                        loading="lazy"
                                         fill
                                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
