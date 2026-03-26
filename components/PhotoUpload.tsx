@@ -43,7 +43,7 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
             const skippedFiles: File[] = []
 
             for (const file of Array.from(files)) {
-                const isHeic = file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic');
+                const isHeic = file.type === 'image/heic' || file.type === 'image/heif' || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
 
                 if (isHeic) {
                     containsHeic = true
