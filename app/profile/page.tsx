@@ -245,52 +245,6 @@ export default function Profile() {
         }
     }
 
-    // const handleDeleteAccount = async () => {
-    //     if (deleteConfirmText !== 'DELETE') {
-    //         alert('Please type "DELETE" to confirm')
-    //         return
-    //     }
-
-    //     setDeleting(true)
-
-    //     try {
-    //         // Delete all user's data
-    //         const { data: photos } = await supabase
-    //             .from('photos')
-    //             .select('storage_path')
-    //             .eq('user_id', user?.id)
-
-    //         if (photos && photos.length > 0) {
-    //             const paths = photos.map(p => p.storage_path)
-    //             await supabase.storage.from('photos').remove(paths)
-    //         }
-
-    //         if (profilePicture) {
-    //             const oldPath = profilePicture.split('/').pop()
-    //             if (oldPath) {
-    //                 await supabase.storage
-    //                     .from('profile-pictures')
-    //                     .remove([`${user?.id}/${oldPath}`])
-    //             }
-    //         }
-
-    //         const { error: deleteError } = await supabase
-    //             .from('profiles')
-    //             .delete()
-    //             .eq('id', user?.id)
-
-    //         if (deleteError) throw deleteError
-
-    //         // Sign out
-    //         await signOut()
-    //         router.push('/login')
-    //     } catch (error: any) {
-    //         console.error('Error deleting account:', error)
-    //         alert(error.message || 'Failed to delete account')
-    //         setDeleting(false)
-    //     }
-    // }
-
     const handleDeleteAccount = async () => {
         if (checkDemoUser(user?.email)) {
             toast.error('Demo users cannot delete the account.')
