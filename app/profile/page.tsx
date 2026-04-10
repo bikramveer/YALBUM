@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import "./profile.css"
 import Logo from "@/components/Logo"
 import Link from "next/link"
+import { blockDemoAction, checkDemoUser } from "@/lib/demoUser"
 
 export default function Profile() {
     const { user, signOut } = useAuth();
@@ -82,6 +83,11 @@ export default function Profile() {
     }
 
     const handleNameUpdate = async () => {
+        if (checkDemoUser(user?.email)) {
+            toast.error('Demo users cannot change the display name.')
+            return
+        }
+
         if (!name.trim()) {
             setNameError('Name cannot be empty')
             return
@@ -108,6 +114,11 @@ export default function Profile() {
     }
 
     const handleProfilePictureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (checkDemoUser(user?.email)) {
+            toast.error('Demo users cannot change the profile picture.')
+            return
+        }
+
         const file =e.target.files?.[0]
         if (!file) return
 
@@ -175,6 +186,10 @@ export default function Profile() {
     const handlePasswordUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
         setPwError('')
+        if (checkDemoUser(user?.email)) {
+            toast.error('Demo users cannot change the password.')
+            return
+        }
 
         // Validation
         if (!currentPassword || !newPassword || !confirmPassword) {
@@ -230,49 +245,108 @@ export default function Profile() {
         }
     }
 
+    // const handleDeleteAccount = async () => {
+    //     if (deleteConfirmText !== 'DELETE') {
+    //         alert('Please type "DELETE" to confirm')
+    //         return
+    //     }
+
+    //     setDeleting(true)
+
+    //     try {
+    //         // Delete all user's data
+    //         const { data: photos } = await supabase
+    //             .from('photos')
+    //             .select('storage_path')
+    //             .eq('user_id', user?.id)
+
+    //         if (photos && photos.length > 0) {
+    //             const paths = photos.map(p => p.storage_path)
+    //             await supabase.storage.from('photos').remove(paths)
+    //         }
+
+    //         if (profilePicture) {
+    //             const oldPath = profilePicture.split('/').pop()
+    //             if (oldPath) {
+    //                 await supabase.storage
+    //                     .from('profile-pictures')
+    //                     .remove([`${user?.id}/${oldPath}`])
+    //             }
+    //         }
+
+    //         const { error: deleteError } = await supabase
+    //             .from('profiles')
+    //             .delete()
+    //             .eq('id', user?.id)
+
+    //         if (deleteError) throw deleteError
+
+    //         // Sign out
+    //         await signOut()
+    //         router.push('/login')
+    //     } catch (error: any) {
+    //         console.error('Error deleting account:', error)
+    //         alert(error.message || 'Failed to delete account')
+    //         setDeleting(false)
+    //     }
+    // }
+
     const handleDeleteAccount = async () => {
-        if (deleteConfirmText !== 'DELETE') {
-            alert('Please type "DELETE" to confirm')
+        if (checkDemoUser(user?.email)) {
+            toast.error('Demo users cannot delete the account.')
             return
+        }
+
+        if (deleteConfirmText !== 'DELETE') {
+        alert('Please type "DELETE" to confirm')
+        return
         }
 
         setDeleting(true)
 
         try {
-            // Delete all user's data
-            const { data: photos } = await supabase
-                .from('photos')
-                .select('storage_path')
-                .eq('user_id', user?.id)
+        console.log('Deleting account...')
 
-            if (photos && photos.length > 0) {
-                const paths = photos.map(p => p.storage_path)
-                await supabase.storage.from('photos').remove(paths)
+        // Delete all user's photos from storage
+        const { data: photos } = await supabase
+            .from('photos')
+            .select('storage_path')
+            .eq('user_id', user?.id)
+
+        if (photos && photos.length > 0) {
+            const paths = photos.map(p => p.storage_path)
+            await supabase.storage.from('photos').remove(paths)
+        }
+
+        // Delete profile picture
+        if (profilePicture) {
+            const oldPath = profilePicture.split('/').pop()
+            if (oldPath) {
+            await supabase.storage
+                .from('profile-pictures')
+                .remove([`${user?.id}/${oldPath}`])
             }
+        }
 
-            if (profilePicture) {
-                const oldPath = profilePicture.split('/').pop()
-                if (oldPath) {
-                    await supabase.storage
-                        .from('profile-pictures')
-                        .remove([`${user?.id}/${oldPath}`])
-                }
-            }
+        // Call the database function to delete profile AND auth user
+        const { data, error } = await supabase.rpc('delete_own_account')
 
-            const { error: deleteError } = await supabase
-                .from('profiles')
-                .delete()
-                .eq('id', user?.id)
+        if (error) {
+            console.error('Delete error:', error)
+            throw new Error(error.message || 'Failed to delete account')
+        }
 
-            if (deleteError) throw deleteError
+        console.log('Account deleted successfully:', data)
 
-            // Sign out
-            await signOut()
-            router.push('/login')
+        alert('Account deleted successfully')
+        
+        // Sign out
+        await signOut()
+        router.push('/login')
         } catch (error: any) {
-            console.error('Error deleting account:', error)
-            alert(error.message || 'Failed to delete account')
-            setDeleting(false)
+        console.error('Error deleting account:', error)
+        alert(error.message || 'Failed to delete account')
+        setDeleting(false)
         }
     }
 
@@ -591,4 +665,8 @@ export default function Profile() {
             </div>
         </>
     )
+}
+
+function showDemoModal(arg0: string) {
+    throw new Error("Function not implemented.")
 }
