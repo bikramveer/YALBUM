@@ -70,7 +70,7 @@ function SignUpForm() {
 
       // Redirect to home page (or show confirmation message)
       toast.success('Success! Check your email to verify your account.')
-      router.push('/login')
+      router.push(`/verify?email=${encodeURIComponent(email)}`)
       router.refresh()
     } catch (err: any) {
       setError(err.message || 'Failed to sign up')

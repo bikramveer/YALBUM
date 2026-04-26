@@ -103,7 +103,7 @@ export default function CreateAlbumModal({ isOpen, onClose, onCreated }: Props) 
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="e.g. Our Love Story"
+              placeholder="e.g. Summer 2026"
               className="auth-input"
               autoFocus
               required

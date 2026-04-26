@@ -29,7 +29,7 @@ export default function LandingPage() {
     {
       icon: Users,
       title: 'Share Together',
-      description: 'Invite loved ones to shared albums and build memories together, anywhere.'
+      description: 'Invite friends and family to shared albums and build memories together, anywhere.'
     },
     {
       icon: Sparkles,
