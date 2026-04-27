@@ -37,12 +37,19 @@ function LoginForm() {
                 password,
             });
 
-            if (error) throw error;
-
-            if (data.user && !data.user.email_confirmed_at) {
-                await supabase.auth.signOut()
-                throw new Error('Please verify your email before logging in. Check your inbox!')
+            if (error) {
+                if (error.message.toLowerCase().includes('email not confirmed')) {
+                    await supabase.auth.resend({ type: 'signup', email })
+                    router.push(`/verify?email=${encodeURIComponent(email)}`)
+                    return
+                }
+                throw error
             }
+
+            // if (data.user && !data.user.email_confirmed_at) {
+            //     await supabase.auth.signOut()
+            //     throw new Error('Please verify your email before logging in. Check your inbox!')
+            // }
             
             router.push('/');
             router.refresh()
