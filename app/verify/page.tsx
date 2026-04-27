@@ -82,7 +82,7 @@ function VerifyEmailForm() {
 
       if (data.session) {
         toast.success('Email verified! Welcome to YALBUM 🎉')
-        router.push('/dashboard')
+        router.push('/albums')
         router.refresh()
       }
     } catch (err: any) {
