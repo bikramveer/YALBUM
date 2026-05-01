@@ -17,14 +17,27 @@ function ResetPasswordForm() {
     const [sessionReady, setSessionReady] = useState(false)
 
     useEffect(() => {
-        // Exchange session tokens from url for session
+        // Check immediately on mount for existing session from URL hash
+        const handleHashChange = async () => {
+            const hash = window.location.hash
+            if (hash && hash.includes('type=recovery')) {
+                const { data } = await supabase.auth.getSession()
+                if (data.session) {
+                    setSessionReady(true)
+                }
+            }
+        }
+        handleHashChange()
+
+        // Listen for auth state changes as fallback
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             async (event, session) => {
-                if (event === 'PASSWORD_RECOVERY') {
+                if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
                     setSessionReady(true)
                 }
             }
         )
+
         return () => subscription.unsubscribe()
     }, [])
 
@@ -95,7 +108,7 @@ function ResetPasswordForm() {
                                         type={showPassword ? 'text' : 'password'}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="Min. 8 characters"
+                                        placeholder="Min. 6 characters"
                                         required
                                         className="auth-input"
                                         disabled={!sessionReady}
