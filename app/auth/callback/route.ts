@@ -35,10 +35,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
+    console.log('Auth callback hit:', request.url)
     const requestUrl = new URL(request.url)
     const token_hash = requestUrl.searchParams.get('token_hash')
     const type = requestUrl.searchParams.get('type')
     const code = requestUrl.searchParams.get('code')
+    console.log('Params:', { token_hash, type, code })
+
     const cookieStore = await cookies()
 
     const supabase = createServerClient(
