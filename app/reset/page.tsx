@@ -17,19 +17,26 @@ function ResetPasswordForm() {
     const [sessionReady, setSessionReady] = useState(false)
 
     useEffect(() => {
-        // Check immediately on mount for existing session from URL hash
-        const handleHashChange = async () => {
-            const hash = window.location.hash
-            if (hash && hash.includes('type=recovery')) {
-                const { data } = await supabase.auth.getSession()
-                if (data.session) {
-                    setSessionReady(true)
+        const exchangeCode = async () => {
+            const params = new URLSearchParams(window.location.search)
+            const code = params.get('code')
+
+            if (code) {
+                try {
+                    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+                    if (error) throw error
+                    if (data.session) {
+                        setSessionReady(true)
+                    }
+                } catch (error) {
+                    console.error('Failed to exchange code for session:', error)
                 }
             }
         }
-        handleHashChange()
 
-        // Listen for auth state changes as fallback
+        exchangeCode()
+
+        // Keep as fallback for non-PKCE flows
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             async (event, session) => {
                 if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
