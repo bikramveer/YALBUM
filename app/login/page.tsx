@@ -184,6 +184,16 @@ function LoginForm() {
                         </Link>
                     </p>
                 </div>
+
+                <div className="mt-6 text-center">
+                    <p className="text-sm text-gray-600 flex items-center justify-center gap-2">
+                        {/* <span className="sparkle">✨</span> */}
+                        Forgot your password?{' '}
+                        <Link href='/recovery' className="text-blue-500 font-semibold hover:text-teal-600 transition-colors">
+                            Reset your password
+                        </Link>
+                    </p>
+                </div>
             </div>
 
             <style jsx>{`
