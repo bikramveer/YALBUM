@@ -136,7 +136,7 @@ export default function AlbumPage() {
     // Photos shown depend on current view
     const visiblePhotos = currentFolder
     ? photos.filter(p => p.folder_id === currentFolder.id)
-    : photos.filter(p => p.folder_id === null)
+    : photos
 
     return (
         <main className="min-h-screen bg-gradient-to-br from-blue-50 via-teal-50 to-blue-50">
