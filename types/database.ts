@@ -58,6 +58,7 @@ export interface Photo {
     album_id: string
     folder_id: string | null        // null = in All Photos
     storage_path: string            // path in supabase storage
+    compressed_path: string | null
     file_name: string
     file_size: number | null        // bytes
     mime_type: string | null        // jpeg, png, etc...
@@ -94,7 +95,8 @@ export interface FolderWithCount extends Folder {
 
 export interface PhotoWithUser extends Photo {
     profile: Profile | null                // User who uploaded the photo
-    signed_url?: string 
+    signed_url?: string
+    compressed_signed_url?: string
 }
 
 export interface CommentWithUser extends Comment {

@@ -129,11 +129,10 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
     }
 
     const handleBulkDelete = async () => {
-        
         const n = selectedIds.size
         setDeletingMulti(true)
         try {
-            await Promise.all(photos.filter(p => selectedIds.has(p.id)).map(p => deletePhoto(p.storage_path)))
+            await Promise.all(photos.filter(p => selectedIds.has(p.id)).map(p => deletePhoto(p.storage_path, p.compressed_path)))
             const { error } = await supabase
                 .from('photos')
                 .delete()
@@ -145,6 +144,10 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
             setSelectedIds(new Set())
             setSelectMode(false)
             setShowDeleteConfirm(false)
+
+            const albumId = photos[0]?.album_id
+            if (albumId) sessionStorage.removeItem(`photos_${albumId}`)
+
             onRefresh()
         } catch (err) {
             console.error('Bulk delete error:', err)
@@ -394,7 +397,7 @@ export default function PhotoGrid({ photos, folders, albumName, currentFolder, l
                             >
                                 <div className="aspect-square relative overflow-hidden rounded-lg bg-gray-100">
                                     <Image
-                                        src={photo.signed_url || getPhotoUrl(photo.storage_path)}
+                                        src={photo.compressed_signed_url || photo.signed_url || getPhotoUrl(photo.storage_path)}
                                         alt={photo.file_name}
                                         loading="lazy"
                                         fill

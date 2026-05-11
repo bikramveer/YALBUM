@@ -36,16 +36,20 @@ export default function AlbumPage() {
             router.push('/login')
             return
         }
-        if (user && albumId && !hasFetched.current) { 
+        if (user && albumId && !hasFetched.current) {
+          hasFetched.current = true
           fetchAll()
-          hasFetched.current = true 
+        }
+
+        return () => {
+          hasFetched.current = false
         }
     }, [user, loading, albumId])
 
-    const fetchAll = async () => {
+    const fetchAll = async (forceRefresh = false) => {
         if (!user) return
         setLoadingData(true)
-        await Promise.all([fetchProfile(), fetchAlbum(), fetchFolders(), fetchPhotos()])
+        await Promise.all([fetchProfile(), fetchAlbum(), fetchFolders(), fetchPhotos(forceRefresh)])
         setLoadingData(false)
     }
 
@@ -97,28 +101,98 @@ export default function AlbumPage() {
     //     .select('*, profile:profiles(*)')
     //     .eq('album_id', albumId)
     //     .order('created_at', { ascending: false })
-    //   if (data) setPhotos(data as PhotoWithUser[])
+
+    //   if (data) {
+    //     const storagePaths = data.map(photo => photo.storage_path)
+
+    //     const signedUrls = await generateSignedUrls(storagePaths)
+
+    //     const photosWithUrls = data.map(photo => ({
+    //       ...photo,
+    //       signed_url: signedUrls[photo.storage_path] || ''
+    //     }))
+
+    //     setPhotos(photosWithUrls as PhotoWithUser[])
+    //   }
     // }
 
-    const fetchPhotos = async () => {
-      const { data } = await supabase
+    // const fetchPhotos = async () => {
+    //   const { data: photosData } = await supabase
+    //     .from('photos')
+    //     .select('*, profile:profiles(*)')
+    //     .eq('album_id', albumId)
+    //     .order('created_at', { ascending: false })
+
+    //   if (photosData) {
+    //     const photosWithUrls = await Promise.all(
+    //       photosData.map(async (photo) => {
+    //         const displayPath = photo.compressed_path ?? photo.storage_path
+    //         const { data: displayUrl } = await supabase.storage
+    //           .from('photos')
+    //           .createSignedUrl(displayPath, 60 * 60 * 24 * 30)
+
+    //         return {
+    //           ...photo,
+    //           signed_url: '',
+    //           compressed_signed_url: displayUrl?.signedUrl || '',
+    //         }
+    //       })
+    //     )
+
+    //     setPhotos(photosWithUrls as PhotoWithUser[])
+    //   }
+    // }
+
+    const fetchPhotos = async (forceRefresh = false) => {
+      const cacheKey = `photos_${albumId}`
+
+      if (!forceRefresh) {
+        const cached = sessionStorage.getItem(cacheKey)
+        if (cached) {
+          setPhotos(JSON.parse(cached))
+          setLoadingData(false)
+
+          fetchFreshPhotos().then(fresh => {
+            if (fresh) {
+              sessionStorage.setItem(cacheKey, JSON.stringify(fresh))
+              setPhotos(fresh)
+            }
+          })
+          return
+        }
+      }
+
+      const fresh = await fetchFreshPhotos()
+      if (fresh) {
+        sessionStorage.setItem(cacheKey, JSON.stringify(fresh))
+        setPhotos(fresh)
+      }
+    }
+
+    const fetchFreshPhotos = async (): Promise<PhotoWithUser[] | null> => {
+      const { data: photosData } = await supabase
         .from('photos')
         .select('*, profile:profiles(*)')
         .eq('album_id', albumId)
         .order('created_at', { ascending: false })
 
-      if (data) {
-        const storagePaths = data.map(photo => photo.storage_path)
+      if (!photosData) return null
 
-        const signedUrls = await generateSignedUrls(storagePaths)
+      const photosWithUrls = await Promise.all(
+        photosData.map(async (photo) => {
+          const displayPath = photo.compressed_path ?? photo.storage_path
+          const { data: displayUrl } = await supabase.storage
+            .from('photos')
+            .createSignedUrl(displayPath, 60 * 60 * 24 * 30)
 
-        const photosWithUrls = data.map(photo => ({
-          ...photo,
-          signed_url: signedUrls[photo.storage_path] || ''
-        }))
-
-        setPhotos(photosWithUrls as PhotoWithUser[])
-      }
+          return {
+            ...photo,
+            signed_url: '',
+            compressed_signed_url: displayUrl?.signedUrl || '',
+          }
+        })
+      )
+      return photosWithUrls as PhotoWithUser[]
     }
 
         // Show loading while checking auth
@@ -168,7 +242,15 @@ export default function AlbumPage() {
                                 </svg>
                                 Switch Album
                             </button>
-                            <PhotoUpload onUploadComplete={fetchAll} currentFolderId={currentFolder?.id ?? null} albumId={albumId} />
+                            <PhotoUpload
+                              // onUploadComplete={fetchAll}
+                              onUploadComplete={() => {
+                                sessionStorage.removeItem(`photos_${albumId}`)
+                                fetchAll(true)
+                              }}
+                              currentFolderId={currentFolder?.id ?? null}
+                              albumId={albumId}
+                            />
                             <div className="flex"> 
                               <button
                                   onClick={() => router.push('/profile')}
@@ -235,7 +317,14 @@ export default function AlbumPage() {
                                 Switch Album
                             </button>
                             <div className="flex-1">
-                                <PhotoUpload onUploadComplete={fetchAll} currentFolderId={currentFolder?.id ?? null} albumId={albumId} />
+                                <PhotoUpload
+                                  onUploadComplete={() => {
+                                    sessionStorage.removeItem(`photos_${albumId}`)
+                                    fetchAll(true)
+                                  }}
+                                  currentFolderId={currentFolder?.id ?? null}
+                                  albumId={albumId}
+                                />
                             </div>
                         </div>
                     </div>
@@ -306,7 +395,11 @@ export default function AlbumPage() {
                         albumName={album.name}
                         currentFolder={null}
                         loading={false}
-                        onRefresh={fetchAll}
+                        // onRefresh={fetchAll}
+                        onRefresh={() => {
+                          sessionStorage.removeItem(`photos_${albumId}`)
+                          fetchAll(true)
+                        }}
                         sortOption={sortOption}
                         onSortChange={setSortOption}
                       />
@@ -322,7 +415,10 @@ export default function AlbumPage() {
                     albumName={album.name}
                     currentFolder={currentFolder.name}
                     loading={false}
-                    onRefresh={fetchAll}
+                    onRefresh={() => {
+                      sessionStorage.removeItem(`photos_${albumId}`)
+                        fetchAll(true)
+                    }}
                     emptyMessage={`No photos in ${currentFolder.name} yet!`}
                     sortOption={sortOption}
                     onSortChange={setSortOption}

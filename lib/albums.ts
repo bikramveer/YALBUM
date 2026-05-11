@@ -51,17 +51,17 @@ export async function fetchUserAlbums(userId: string): Promise<AlbumWithDetails[
             // Get up to 4 cover photos
             const { data: coverPhotos } = await supabase
                 .from('photos')
-                .select('storage_path')
+                .select('storage_path, compressed_path')
                 .eq('album_id', album.id)
                 .order('created_at', { ascending: false })
                 .limit(4)
 
-            const storagePaths = coverPhotos?.map(p => p.storage_path) || []
-            const signedUrls = storagePaths.length > 0
-                ? await generateSignedUrls(storagePaths)
+            const displayPaths = coverPhotos?.map(p => p.compressed_path ?? p.storage_path) || []
+            const signedUrls = displayPaths.length > 0
+                ? await generateSignedUrls(displayPaths)
                 : {}
 
-            const coverPhotosWithUrls = storagePaths.map(path => signedUrls[path] || '')
+            const coverPhotosWithUrls = displayPaths.map(path => signedUrls[path] || '')
 
             return {
                 ...album,
