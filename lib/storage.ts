@@ -35,6 +35,48 @@ export async function uploadPhoto(
     return data.path;
 };
 
+export async function uploadCompressedPhoto(
+  file: File,
+  userId: string,
+  originalPath: string,
+): Promise<string | null> {
+  try {
+    // Create a canvas to compress the image
+    const bitmap = await createImageBitmap(file)
+    const canvas = document.createElement('canvas')
+    canvas.width = bitmap.width
+    canvas.height = bitmap.height
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(bitmap, 0, 0)
+
+    const blob = await new Promise<Blob | null>(resolve => 
+      canvas.toBlob(resolve, 'image/jpeg', 0.85)
+    )
+    if (!blob) return null
+
+    const timestamp = originalPath.split('/')[1]?.split('.')[0] || Date.now()
+    const compressedPath = `${userId}/compressed/${timestamp}.jpg`
+
+    const { data, error } = await supabase.storage
+      .from(BUCKET_NAME)
+      .upload(compressedPath, blob, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: 'image/jpeg',
+      })
+
+    if (error) {
+      console.warn('Compressed upload failed:', error)
+      return null
+    }
+
+    return data.path
+  } catch (error) {
+    console.warn('Compression failed:', error)
+    return null
+  }
+}
+
 export async function uploadMultiplePhotos (
   files: File[],
   userId: string,
@@ -76,10 +118,13 @@ export function getPhotoUrl(storagePath: string): string {
   return storagePath
 }
 
-export async function deletePhoto(storagePath: string): Promise<boolean> {
+export async function deletePhoto(storagePath: string, compressedPath?: string | null): Promise<boolean> {
+    const pathsToDelete = [storagePath]
+    if (compressedPath) pathsToDelete.push(compressedPath)
+
     const { error } = await supabase.storage
       .from(BUCKET_NAME)
-      .remove([storagePath])
+      .remove(pathsToDelete)
 
     if (error) {
         console.error('Delete error:', error);

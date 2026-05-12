@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useAuth } from './AuthProvider';
 import { checkDemoUser } from "@/lib/demoUser";
 import { useDemoModal } from "./DemoModalProvider";
-import { uploadPhoto, validateImageFile, getPhotoMetadata } from '@/lib/storage';
+import { uploadPhoto, validateImageFile, getPhotoMetadata, uploadCompressedPhoto } from '@/lib/storage';
 import { toast } from "sonner";
 import { supabase } from '@/lib/supabase';
 // import heic2any from 'heic2any';
@@ -61,6 +61,8 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
                 }
 
                 const storagePath = await uploadPhoto(file, user.id);
+                const compressedPath = await uploadCompressedPhoto(file, user.id, storagePath)
+                // const displayPath = compressedPath ?? storagePath
                 const metadata = getPhotoMetadata(file);
 
                 const { error: dbError } = await supabase
@@ -69,6 +71,7 @@ export default function PhotoUpload({ onUploadComplete, currentFolderId, albumId
                         user_id: user.id,
                         album_id: albumId,
                         storage_path: storagePath,
+                        compressed_path: compressedPath,
                         folder_id: currentFolderId,
                         ...metadata,
                     });

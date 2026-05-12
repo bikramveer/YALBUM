@@ -51,6 +51,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
     if (isOpen && photo) {
       fetchProfile()
       fetchComments()
+      console.log(photo.compressed_path ? 'Showing compressed' : 'Showing orginal')
     }
   }, [isOpen, photo])
 
@@ -129,7 +130,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
 
     setDownloading(true)
     try {
-      await deletePhoto(photo.storage_path)
+      await deletePhoto(photo.storage_path, photo.compressed_path)
 
       const { error } = await supabase
         .from('photos')
@@ -190,7 +191,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
             ref={photoRef}
             className='relative flex items-center justify-center bg-transparent overflow-hidden md:max-w-[65vw] flex-shrink-0'>
             <img
-              src={photo.signed_url || getPhotoUrl(photo.storage_path)}
+              src={photo.compressed_signed_url ||photo.signed_url || getPhotoUrl(photo.storage_path)}
               alt={photo.file_name}
               className='block w-full md:w-auto md:h-auto md:max-h-[90vh] md:max-w-[55vw] max-h-[45vh] object-contain rounded-l-xl'
             />
