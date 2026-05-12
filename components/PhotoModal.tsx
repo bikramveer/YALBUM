@@ -10,6 +10,8 @@ import { useAuth } from './AuthProvider'
 import CommentSection from './CommentSection'
 import MovePhotoModal from './MovePhotoModal'
 import ConfirmModal from './ConfirmModal'
+import ReportModal from './ReportModal'
+import UserMenuModal from './UserMenuModal'
 
 interface PhotoModalProps {
   photo: PhotoWithUser
@@ -32,6 +34,10 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [downloading, setDownloading] = useState(false)
+  const [showReportModal, setShowReportModal] = useState(false)
+  const [showUserMenuModal, setShowUserMenuModal] = useState(false)
+  const [reportContentType, setReportContentType] = useState<'photo' | 'profile_picture' | 'username'>('photo')
+
   const photoRef = useRef<HTMLDivElement>(null)
   const [photoHeight, setPhotoHeight] = useState<number | null>(null)
 
@@ -51,6 +57,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
     if (isOpen && photo) {
       fetchProfile()
       fetchComments()
+      console.log(photo.compressed_path ? 'Showing compressed' : 'Showing orginal')
     }
   }, [isOpen, photo])
 
@@ -129,7 +136,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
 
     setDownloading(true)
     try {
-      await deletePhoto(photo.storage_path)
+      await deletePhoto(photo.storage_path, photo.compressed_path)
 
       const { error } = await supabase
         .from('photos')
@@ -176,6 +183,8 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
     }
   }, [isOpen, onClose])
 
+  const isOwnPhoto = user && user.id === photo.user_id
+
   if (!isOpen) return null
 
   return (
@@ -190,7 +199,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
             ref={photoRef}
             className='relative flex items-center justify-center bg-transparent overflow-hidden md:max-w-[65vw] flex-shrink-0'>
             <img
-              src={photo.signed_url || getPhotoUrl(photo.storage_path)}
+              src={photo.compressed_signed_url ||photo.signed_url || getPhotoUrl(photo.storage_path)}
               alt={photo.file_name}
               className='block w-full md:w-auto md:h-auto md:max-h-[90vh] md:max-w-[55vw] max-h-[45vh] object-contain rounded-l-xl'
             />
@@ -234,6 +243,22 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
                       })}
                     </p>
                   </div>
+
+                  <div className='flex items-center gap-1'>
+                    {!isOwnPhoto && (
+                      <button
+                        onClick={() => setShowUserMenuModal(true)}
+                        className='p-2 hover:bg-gray-100 rounded-full transition-colors'
+                        aria-label='More options'
+                      >
+                        <svg className='w-5 h-5 text-gray-500' fill='currentColor' viewBox='0 0 24 24'>
+                          <circle cx='5' cy='12' r='2' />
+                          <circle cx='12' cy='12' r='2' />
+                          <circle cx='19' cy='12' r='2' />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Close button only */}
@@ -275,7 +300,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
                 </button>
 
                 {/* Move */}
-                {user && user.id === photo.user_id && (
+                {isOwnPhoto && (
                   <button
                     onClick={() => setShowMoveModal(true)}
                     className='flex items-center justify-center gap-2 flex-1 py-2.5 text-gray-700 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors font-medium text-sm'
@@ -289,7 +314,7 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
                 )}
 
                 {/* Delete (only for photo owner) */}
-                {user && user.id === photo.user_id && (
+                {isOwnPhoto && (
                   <button
                     onClick={() => setShowDeleteConfirm(true)}
                     disabled={deleting}
@@ -309,6 +334,20 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
                         Delete
                       </>
                     )}
+                  </button>
+                )}
+
+                {/* Report (other people's photos only) */}
+                {!isOwnPhoto && (
+                  <button
+                    onClick={() => setShowReportModal(true)}
+                    className='flex items-center justify-center gap-2 flex-1 py-2.5 text-gray-500 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors font-medium text-sm'
+                    title='Report photo'
+                  >
+                    <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6H13l-1-1H5a2 2 0 00-2 2zm9-13.5V9' />
+                    </svg>
+                    Report
                   </button>
                 )}
               </div>
@@ -352,6 +391,28 @@ export default function PhotoModal({ photo, folders, albumName, isOpen, onClose,
         confirmText='Delete'
         confirmStyle='danger'
         loading={deleting}
+      />
+
+      <UserMenuModal
+        isOpen={showUserMenuModal}
+        onClose={() => setShowUserMenuModal(false)}
+        userName={photo.profile?.name || 'Unknown'}
+        onReportUsername={() => {
+          setReportContentType('username')
+          setShowReportModal(true)
+        }}
+        onReportProfilePicture={() => {
+          setReportContentType('profile_picture')
+          setShowReportModal(true)
+        }}
+      />
+
+      <ReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        contentType={reportContentType}
+        contentId={reportContentType === 'photo' ? photo.id : photo.user_id}
+        reportedUserId={photo.user_id}
       />
     </>
   )

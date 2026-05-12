@@ -37,7 +37,7 @@ export default function AlbumsPage() {
         }
     }, [user, loading])
 
-    const loadData = async () => {
+    const loadData = async (forceRefresh = false) => {
         if (!user) return
         setLoadingAlbums(true)
 
@@ -49,7 +49,24 @@ export default function AlbumsPage() {
 
         if (profileData) setProfile(profileData)
 
+        const cacheKey = `albums_${user.id}`
+
+        if (!forceRefresh) {
+            const cached = sessionStorage.getItem(cacheKey)
+            if (cached) {
+                setAlbums(JSON.parse(cached))
+                setLoadingAlbums(false)
+
+                fetchUserAlbums(user.id).then(data => {
+                    setAlbums(data)
+                    sessionStorage.setItem(cacheKey, JSON.stringify(data))
+                })
+                return
+            }
+        }
+
         const data = await fetchUserAlbums(user.id)
+        sessionStorage.setItem(cacheKey, JSON.stringify(data))
         setAlbums(data)
         setLoadingAlbums(false)
     }
@@ -183,7 +200,7 @@ export default function AlbumsPage() {
                                 key={album.id}
                                 album={album}
                                 onOpen={() => router.push(`/album/${album.id}`)}
-                                onRefresh={loadData}
+                                onRefresh={() => loadData(true)}
                             />
                         ))}
                     </div>
